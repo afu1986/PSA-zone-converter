@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M503DXHVK2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-M503DXHVK2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSA NAC Language Code Converter - afu1986</title>
+    <meta name="description" content="This tool allows you to easily convert PSA(Peugeot/Citroen/DS automobiles/OPEL) vehicle NAC system zone 0119 language code. You can select the desired language to get the code, or convert the code to an enabled language.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>body{font-family:'Arial',sans-serif;background-color:#f4f4f4;margin:0;padding:20px;display:flex;flex-direction:column}h1{color:#333;margin-bottom:20px}.result-container{background-color:white;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.1);padding:20px;width:100%;max-width:300px;text-align:center;position:relative}.result{width:100%;box-sizing:border-box;font-family:monospace;padding:10px 32px 10px 10px;border:1px solid #ddd;margin:10px 0;background-color:#f9f9f9;border-radius:5px;word-wrap:break-word}button{padding:5px;border:none;background-color:#007BFF;color:white;border-radius:5px;cursor:pointer}button:hover{background-color:#0056b3}button:active{background-color:#004494}.copy-button{position:absolute;top:50%;right:25px;transform:translateY(-50%)}#toggleSelectAllBtn{width:80px;margin-bottom:10px}#copyMessage{color:green;margin-top:10px;visibility:hidden}.dropdown-container{display:flex;flex-direction:column;gap:10px}.dropdown-item{display:flex;align-items:center}.dropdown-item label{margin:0 10px 0 0;line-height:1;font-weight:bold}.checkbox-item{border:solid 1px #007BFF;width:200px;padding:4px;border-radius:5px}.author{margin-top:50px;padding:20px 0;text-align:center;font-size:.8em;color:#333;width:100%;border-top:1px solid #ddd}.author a{color:#007BFF;text-decoration:none;font-weight:bold;transition:color .3s ease,text-shadow .3s ease}.author a:hover{color:#0056b3;text-shadow:0 0 5px rgba(0,91,187,.5)}@media (max-width:768px){.dropdown-container{gap:5px}.dropdown-item label{font-size:.9em}.result{font-size:.9em}h1{font-size:1.6em}}@media (max-width:480px){.dropdown-container{gap:3px}.dropdown-item label{font-size:.8em}.result{font-size:.8em}.author{font-size:.7em}}
+</style>
+</head>
+<body>
+
+    <h1>PSA NAC Language Code Converter</h1>
+    <h3>Changelog</h3>
+    <ul>
+        <li>v1.0 - 2024/11/12: Initial version</li>
+    </ul>
+    <h3>ZONE 0119 code</h3>
+    <p>You can disable any languages you don’t need, or enable languages that are not originally in the list.<br>Alternatively, you can paste the 2E0119/620119... code here.</p>
+    <div class="result-container">
+        <input type="text" id="result" class="result" value="2E0119FFFD9FB7">
+        <button id="copyButton" class="copy-button" onclick="copyResult()">
+            <i class="fas fa-copy"></i>
+        </button>
+    </div>
+    <div id="copyMessage">Result has been copied</div>
+
+
+
+<h3>Choose the language you need</h3>
+<p>* Note: Not all languages are included in the firmware. If you enable a language that is not supported, it will appear in the list but will not be successfully applied.</p>
+
+    <button id="toggleSelectAllBtn" onclick="toggleSelectAll()">Select all</button>
+    <div class="dropdown-container" id="checkbox-container">
+    </div>
+
+     <h3>Use Code</h3>
+    <div>arduino terminal<br>
+        (Please refer <a href="https://vlud.net/nac-telecodage.html" target="_blank">vlud.net Diagbox via Arduino - Etape 8</a>)<br>
+        <pre><code>
+        >764:664[↵]
+        :D91C:03:03[↵]
+        Paste the code[↵]
+        1103[↵]
+        </code></pre>
+    </div>
+
+    <h3>Related functions</h3>
+    <a href="../010E">PSA NAC ZONE 010E FMUX Code Custom Converter</a>
+
+    <div class="author">
+        PSA NAC code converter © <a href="https://www.facebook.com/afu1986" target="_blank">Justin Tsai</a> | <a href="https://www.instagram.com/ds.taiwan/" target="_blank">DS TAIWAN</a> 資訊提供：<a href="https://www.facebook.com/chunchai0120" target="_blank">髒圳嘎</a>
+    </div>
+
+    <script>
+        const optionNames = [
+            "العربية", "Brasileiro", "Български", "Hrvatski", "Čeština", "Dansk", "Nederlands", "English",
+            "Eesti", "فارسی", "Suomi", "Français", "Deutsch", "Ελληνικά", "עברית", "Magyar",
+            "Italiano", "日本語", "한국어", "Norsk", "Polski", "Português", "Română", "Русский",
+            "Српски", "简体中文", "Español", "Svenska", "繁體中文", "Türkçe", "Українська", "Tiếng Việt"
+        ];
+
+        let isAllSelected = false;
+
+        const checkboxContainer = document.getElementById("checkbox-container");
+
+        optionNames.forEach((name, index) => {
+            const label = document.createElement("label");
+            label.className = "checkbox-item";
+            
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = index;
+            checkbox.addEventListener("change", updateResult);
+
+            label.appendChild(checkbox);
+            label.append(` ${name}`);
+            checkboxContainer.appendChild(label);
+        });
+
+        const resultInput = document.getElementById("result");
+
+        function updateResult() {
+            let totalHex = BigInt(0);
+            document.querySelectorAll(".checkbox-item input[type='checkbox']").forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalHex |= (BigInt(0x80000000) >> BigInt(checkbox.value));
+                }
+            });
+            resultInput.value = "2E0119" + totalHex.toString(16).toUpperCase().padStart(8, '0');
+        }
+
+        function updateCheckboxesFromResult() {
+            const resultValue = resultInput.value.toUpperCase().trim();
+            let prefix = resultValue.substring(0, 6);
+
+            if (prefix === "2E0119" || prefix === "620119") {
+                let bitmask = BigInt("0x" + resultValue.substring(6));
+
+                document.querySelectorAll(".checkbox-item input[type='checkbox']").forEach((checkbox, index) => {
+                    const bit = BigInt(0x80000000) >> BigInt(index);
+                    checkbox.checked = (bitmask & bit) !== BigInt(0);
+                });
+            }
+        }
+        updateCheckboxesFromResult();
+        resultInput.addEventListener("input", updateCheckboxesFromResult);
+
+        function toggleSelectAll() {
+            isAllSelected = !isAllSelected;
+            document.querySelectorAll(".checkbox-item input[type='checkbox']").forEach(checkbox => {
+                checkbox.checked = isAllSelected;
+            });
+            document.getElementById("toggleSelectAllBtn").innerText = isAllSelected ? "Deselect all" : "Select all";
+            updateResult();
+        }
+
+        function copyResult() {
+            navigator.clipboard.writeText(resultInput.value);
+            document.getElementById("copyMessage").style.visibility = "visible";
+            setTimeout(() => {
+                document.getElementById("copyMessage").style.visibility = "hidden";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>

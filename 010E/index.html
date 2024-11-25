@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M503DXHVK2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-M503DXHVK2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSA NAC FMUX Code Custom Converter - afu1986</title>
+    <meta name="description" content="This tool is used to customize the 010E FMUX in the PSA(Peugeot/Citroen/DS automobiles/OPEL) vehicle NAC system. You can convert the FMUX code into readable functions and button positions, or modify the corresponding button functions as needed.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>body{font-family:'Arial',sans-serif;background-color:#f4f4f4;margin:0;padding:20px;display:flex;flex-direction:column;}h1{color:#333;margin-bottom:20px;}.result-container{background-color:white;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.1);padding:20px;width:100%;max-width:800px;text-align:center;position:relative;}.result{width:100%;box-sizing:border-box;font-family:monospace;padding:10px 32px 10px 10px;border:1px solid #ddd;margin:10px 0;background-color:#f9f9f9;border-radius:5px;word-wrap:break-word;}.copy-button{position:absolute;top:50%;right:25px;transform:translateY(-50%);padding:5px;border:none;background-color:#007BFF;color:white;border-radius:5px;cursor:pointer;}.copy-button:hover{background-color:#0056b3;}.copy-button:active{background-color:#004494;}#copyMessage{color:green;margin-top:10px;visibility: hidden;}.dropdown-container{display:flex;flex-direction:column;gap:10px;}.dropdown-item{display:flex;align-items:center;}.dropdown-item label{margin:0 10px 0 0;line-height:1;font-weight:bold;}.author{margin-top:50px;padding:20px 0;text-align:center;font-size:.8em;color:#333;width:100%;border-top:1px solid #ddd;}.author a{color:#007BFF;text-decoration:none;font-weight:bold;transition:color .3s ease,text-shadow .3s ease;}.author a:hover{color:#0056b3;text-shadow:0 0 5px rgba(0,91,187,.5);}@media (max-width:768px){.dropdown-container{gap:5px;}.dropdown-item label{font-size:.9em;}.result{font-size:.9em;}h1{font-size:1.6em;}}@media (max-width:480px){.dropdown-container{gap:3px;}.dropdown-item label{font-size:.8em;}.result{font-size:.8em;}.author{font-size:.7em;}}</style>
+</head>
+<body>
+    <h1>PSA NAC FMUX Code Custom Converter</h1>
+    <h3>Changelog</h3>
+    <ul>
+        <li>v1.0 - 2024/08/26: Initial version</li>
+        <li>v1.0.2 - 2024/08/27: Add more function options</li>
+        <li>v1.0.3 - 2024/08/29: Paste code to convert to button function</li>
+        <li>v1.0.4 - 2024/08/31: Add vehicle template</li>
+    </ul>
+    <h3>Template</h3>
+    <div class="dropdown-container" id="template-dropdown-container">
+    </div>
+    <h3>ZONE 010E code</h3>
+    <p>You can paste 2E010E/62010E...code here<br>
+        Or select the function from the drop-down menu to get the code</p>
+    <div class="result-container">
+        <input id="result" class="result" type="text" value="2E010E00000000000000000000000000000000000000000000000000000000000000000000000000000000">
+        <button id="copyButton" class="copy-button"> <i class="fas fa-copy"></i></button>
+    </div>
+    <div id="copyMessage" class="hidden-message">Result has been copied</div>
+    <h3>Select the function of the button ID</h3>
+    <div class="dropdown-container" id="dropdown-container">
+    </div>
+
+    <h3>Use Code</h3>
+    <div>arduino terminal<br>
+        (Please refer <a href="https://vlud.net/nac-telecodage.html" target="_blank">vlud.net Diagbox via Arduino - Etape 8</a>)<br>
+        <pre><code>
+        >764:664[↵]
+        :D91C:03:03[↵]
+        Paste the code[↵]
+        1103[↵]
+        </code></pre>
+    </div>
+
+    <h3>Related functions</h3>
+    <a href="../0119">PSA NAC ZONE 0119 Language Code Converter</a>
+    
+    <div class="author">
+        PSA NAC code converter © <a href="https://www.facebook.com/afu1986" target="_blank">Justin Tsai</a> | <a href="https://www.instagram.com/ds.taiwan/" target="_blank">DS TAIWAN</a> 資訊提供：<a href="https://www.facebook.com/chunchai0120" target="_blank">髒圳嘎</a>
+    </div>
+    <script>
+        const options = [
+            { id: "00" , text: "non fonction" },
+            /*
+            { id: "01" , text: "Fonction1" },
+            { id: "02" , text: "Fonction2" },
+            { id: "03" , text: "Fonction3" },
+            { id: "04" , text: "Fonction4" },
+            { id: "05" , text: "Fonction5" },
+            { id: "06" , text: "Fonction6" },
+            */
+            { id: "07" , text: "Eject" },
+            { id: "08" , text: "ESC Facade ESC" },
+            { id: "09" , text: "ESC Designateur ESC" },
+            { id: "0A" , text: "Display/Dark" },
+            { id: "0B" , text: "Display" },
+            { id: "0C" , text: "Dark" },
+            { id: "0D" , text: "TA/Info" },
+            { id: "0E" , text: "TA" },
+            { id: "0F" , text: "Source" },
+            { id: "10" , text: "Source/Tel" },
+            { id: "11" , text: "Band" },
+            { id: "12" , text: "List" },
+            { id: "13" , text: "Audio" },
+            { id: "14" , text: "Menu" },
+            { id: "15" , text: "Fleche gauche" },
+            { id: "16" , text: "Fleche droite" },
+            { id: "17" , text: "Fleche haut" },
+            { id: "18" , text: "Fleche bas" },
+            { id: "19" , text: "OK" },
+            { id: "1A" , text: "Phone" },
+            { id: "1B" , text: "Decrocher" },
+            { id: "1C" , text: "Raccrocher" },
+            { id: "1D" , text: "Radio" },
+            { id: "1E" , text: "Media" },
+            { id: "1F" , text: "Music" },
+            { id: "20" , text: "Nav" },
+            { id: "21" , text: "Traffic" },
+            { id: "22" , text: "Setup" },
+            { id: "23" , text: "Adresse Book" },
+            { id: "24" , text: "Direction Gauche" },
+            { id: "25" , text: "Direction Droite" },
+            { id: "26" , text: "Direction Haut" },
+            { id: "27" , text: "Direction Bas" },
+            /*
+            { id: "28" , text: "Push DSGN Reserve n°1" },
+            { id: "29" , text: "Push DSGN Reserve n°2" },
+            { id: "2A" , text: "Push DSGN Reserve n°3" },
+            { id: "2B" , text: "Push DSGN Reserve n°4" },
+            { id: "2C" , text: "Push DSGN Reserve n 5" },
+            { id: "2D" , text: "Push DSGN Reserve n°6" },
+            { id: "2E" , text: "Push DSGN Reserve n°7" },
+            { id: "2F" , text: "Push DSGN Reserve n°8" },
+            { id: "30" , text: "Push DSGN Reserve n°9" },
+            { id: "31" , text: "Push DSGN Reserve n°10" },
+            */
+            { id: "32" , text: "Direction Gauche HG" },
+            { id: "33" , text: "Direction Droite HG" },
+            { id: "34" , text: "Direction Haut HG" },
+            { id: "35" , text: "Direction Bas HG" },
+            { id: "36" , text: "Mute" },
+            { id: "37" , text: "Mode" },
+            { id: "38" , text: "Web" },
+            { id: "39" , text: "Drive" },
+            { id: "3A" , text: "Climate" },
+            { id: "3B" , text: "Inhibition Synthese Vocale" },
+            { id: "3C" , text: "Info" },
+            { id: "3D" , text: "Zoom In" },
+            { id: "3E" , text: "Zoom Out" },
+            { id: "3F" , text: "Lum Ecran+" },
+            { id: "40" , text: "Lum Ecran-" },
+            { id: "41" , text: "Mute Micro" },
+            { id: "42" , text: "APPS" },
+            { id: "43" , text: "Config" },
+            { id: "44" , text: "MEM" },
+            { id: "45" , text: "MultiDrive" },
+            { id: "46" , text: "Pointer KNOB" },
+            { id: "47" , text: "Synchro KNOB" },
+            { id: "48" , text: "Volume" },
+            { id: "49" , text: "Volume UP" },
+            { id: "4A" , text: "Volume DOWN" },
+            { id: "4B" , text: "Hybrid" },
+            { id: "4C" , text: "INFO_EMUX_CLIMATE_OPTIONS" }
+        ];
+
+        const dropdownContainer = document.getElementById('dropdown-container');
+        const result = document.getElementById('result');
+
+        function createDropdown(index) {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+
+            const label = document.createElement('label');
+            label.textContent = `${String(index).padStart(2, '0')}`;
+
+            const select = document.createElement('select');
+            select.id = `dropdown${index}`;
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option.id;
+                opt.text = `${option.text}`;
+                select.appendChild(opt);
+            });
+            select.addEventListener('change', updateResult);
+
+            div.appendChild(label);
+            div.appendChild(select);
+            return div;
+        }
+        function updateResult() {
+            let resultString = '2E010E';
+            for (let i = 1; i <= 44; i++) {
+                const select = document.getElementById(`dropdown${i}`);
+                resultString += select.value;
+            }
+            document.getElementById('result').value = resultString;
+        }
+        function updateDropdowns() {
+            const input = document.getElementById('result');
+            let value = input.value;
+            if (value.startsWith('62')) {
+                value = '2E' + value.slice(2);
+            }
+            if (value.length === 94) {
+                for (let i = 0; i < 44; i++) {
+                    const select = document.getElementById(`dropdown${i+1}`);
+                    const optionValue = value.substr(i*2 + 6, 2);
+                    if (select.querySelector(`option[value="${optionValue}"]`)) {
+                        select.value = optionValue;
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('load', function() {
+            const input = document.getElementById('result');
+            input.addEventListener('input', updateDropdowns);
+        });
+
+        for (let i = 1; i <= 44; i++) {
+            dropdownContainer.appendChild(createDropdown(i));
+        }
+        updateResult();
+
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const resultInput = document.getElementById('result');
+            resultInput.select();
+            document.execCommand('copy');
+            
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.style.visibility = 'visible';
+            setTimeout(() => {
+                copyMessage.style.visibility = 'hidden';
+            }, 2000);
+        });
+
+        const templateOptions = [
+            { text: "none", value: "2E010E0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
+            { text: "208_I", value: "2E010E140F000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
+            { text: "3008/5008", value: "2E010E000000000000000000000000000000000000001A1E20003900003A3800450000000000000000000000000000" },
+            { text: "3008_HY", value: "2E010E000000000000000000000000000000000000001A1E20003900003A3800454B00000000000000000000000000" },
+            { text: "308_T9", value: "2E010E00000000000007000000000000000000000000001A1E20003A00393800000000000000000000000000000000" },
+            { text: "DS5_RESTYLED", value: "2E010E39201E1A382207000F0000000000000000000000000000000000000000000000000000000000000000000000" },
+            { text: "508_I", value: "2E010E000000000000073820001E391A00221414141400000000000000000000000000000000000000000000000000" },
+            { text: "508_II_R8", value: "2E010E000000000000000000000000000000000000001A1E20223900003A3800450000000000000000000000000000" }
+        ];
+
+        function createTemplateDropdown() {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+
+            const select = document.createElement('select');
+            select.id = 'templateDropdown';
+            templateOptions.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option.value;
+                opt.text = `${option.text}`;
+                select.appendChild(opt);
+            });
+            select.addEventListener('change', function() {
+                document.getElementById('result').value = select.value;
+                updateDropdowns();
+            });
+
+            div.appendChild(select);
+            return div;
+        }
+
+        const templateDropdownContainer = document.getElementById('template-dropdown-container');
+        templateDropdownContainer.appendChild(createTemplateDropdown());
+    </script>
+</body>
+</html>
